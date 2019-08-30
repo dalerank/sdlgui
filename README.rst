@@ -1,8 +1,9 @@
 sdlgui
+----------------------------------------------------------------------------------------
 
 .. begin_brief_description
 
-NanoGUI is a minimalistic port of NanoGUI claim works with SDL API w/o external dependencies. 
+sdlgui is a minimalistic port of NanoGUI claim works with SDL API w/o external dependencies. 
 It supports automatic layout generation, stateful C++11 lambdas callbacks, a variety of
 useful widget types. Include SDL extensions image/ttf.
 
