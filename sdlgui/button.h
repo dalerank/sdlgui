@@ -82,6 +82,8 @@ public:
     virtual Vector2i preferredSize(SDL_Renderer *ctx) const override;
     virtual bool mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) override;
     virtual void draw(SDL_Renderer* renderer) override;
+    virtual void drawBody(SDL_Renderer* renderer);
+    virtual Color bodyColor();
 
     Button& withCallback(const std::function<void()> &callback) { setCallback( callback ); return *this; }
     Button& withFlags(int flags) { setFlags( flags); return *this; }

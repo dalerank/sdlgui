@@ -18,6 +18,7 @@
 #else
     #include <SDL.h>
     #include <SDL_image.h>
+    #include "nanovg.h"
 #endif
 
 #include <map>
@@ -33,6 +34,10 @@
 #endif
 
 NAMESPACE_BEGIN(sdlgui)
+
+NVGcolor Color::toNvgColor() const {
+  return reinterpret_cast<const NVGcolor &>(this->_d);
+}
 
 extern std::map<SDL_Window *, Screen *> __sdlgui_screens;
 

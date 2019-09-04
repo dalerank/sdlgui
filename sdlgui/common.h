@@ -25,6 +25,8 @@ enum class Cursor {
     CursorCount
 };
 
+struct NVGcolor;
+
 #ifdef _MSC_VER
 #define SDLGUI_SNPRINTF _snprintf
 #else
@@ -303,7 +305,8 @@ public:
         return Color(r() + c.r(), g() + c.g(), b() + c.b(), a() + c.a());
     }
 
-    SDL_Color Color::toSdlColor() const;
+    SDL_Color toSdlColor() const;
+    NVGcolor toNvgColor() const;
 
 private:
     struct _Data {

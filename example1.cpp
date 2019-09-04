@@ -29,6 +29,7 @@
 #include <sdlgui/colorwheel.h>
 #include <sdlgui/graph.h>
 #include <sdlgui/tabwidget.h>
+#include <sdlgui/vgbutton.h>
 #include <sdlgui/formhelper.h>
 #include <memory>
 
@@ -69,6 +70,8 @@ public:
           nwindow.label("Push buttons", "sans-bold").and()
                  .button("Plain button", [] { cout << "pushed!" << endl; })
                     .withTooltip("This is plain button tips");
+
+          nwindow.wdg<vgButton>("Plain vgButton", [] { cout << "vg button pushed!" << endl; });
 
           nwindow.button("Styled", ENTYPO_ICON_ROCKET, [] { cout << "pushed!" << endl; })
                    .withBackgroundColor( Color(0, 0, 255, 25) );

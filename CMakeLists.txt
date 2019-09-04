@@ -85,7 +85,7 @@ message(${NNGUI_EXTRA_LIBS})
 
 set(NNGUI_BASIC_SOURCE "")
 list(APPEND NNGUI_BASIC_SOURCE
-     sdlgui/button.h
+     sdlgui/button.h sdlgui/vgbutton.h
      sdlgui/checkbox.h
      sdlgui/colorpicker.h
      sdlgui/colorwheel.h
@@ -110,8 +110,10 @@ list(APPEND NNGUI_BASIC_SOURCE
      sdlgui/vscrollpanel.h
      sdlgui/widget.h
      sdlgui/window.h
+     sdlgui/nanovg.h
+     sdlgui/nanovg_rt.h
      
-     sdlgui/button.cpp
+     sdlgui/button.cpp sdlgui/vgbutton.cpp
      sdlgui/checkbox.cpp
      sdlgui/colorpicker.cpp
      sdlgui/colorwheel.cpp
@@ -137,7 +139,9 @@ list(APPEND NNGUI_BASIC_SOURCE
      sdlgui/theme.cpp
      sdlgui/vscrollpanel.cpp
      sdlgui/widget.cpp
-     sdlgui/window.cpp)
+     sdlgui/window.cpp
+     sdlgui/nanovg.c
+)
      
      # Build example application if desired
 add_executable(example1 ${NNGUI_EXTRA_SOURCE} ${NNGUI_BASIC_SOURCE} example1.cpp )

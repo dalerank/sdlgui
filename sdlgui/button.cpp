@@ -10,6 +10,7 @@
 
 #include <sdlgui/button.h>
 #include <sdlgui/theme.h>
+
 #include <SDL.h>
 #include <array>
 
@@ -136,60 +137,72 @@ void Button::setTextColor(const Color &textColor)
   _iconTex.dirty = true;
 }
 
-void Button::draw(SDL_Renderer* renderer)
+Color Button::bodyColor()
 {
-  Widget::draw(renderer);
-
-  SDL_Color bodyColor = mTheme->mButtonGradientTopUnfocused.toSdlColor();
+  Color result = mTheme->mButtonGradientTopUnfocused;
   if (mBackgroundColor.a() != 0)
-    bodyColor = mBackgroundColor.toSdlColor();
+    result = mBackgroundColor;
 
-  if (mPushed) 
+  if (mPushed)
   {
     if (mBackgroundColor.a() != 0)
     {
-      bodyColor.b *= 1.5;
-      bodyColor.g *= 1.5;
-      bodyColor.r *= 1.5;
+      result.b() *= 1.5;
+      result.g() *= 1.5;
+      result.r() *= 1.5;
     }
     else
-      bodyColor = mTheme->mButtonGradientTopPushed.toSdlColor();
+      result = mTheme->mButtonGradientTopPushed;
   }
   else if (mMouseFocus && mEnabled)
   {
     if (mBackgroundColor.a() != 0)
     {
-      bodyColor.b *= 0.5;
-      bodyColor.g *= 0.5;
-      bodyColor.r *= 0.5;
+      result.b() *= 0.5;
+      result.g() *= 0.5;
+      result.r() *= 0.5;
     }
     else
-      bodyColor = mTheme->mButtonGradientTopFocused.toSdlColor();
+      result = mTheme->mButtonGradientTopFocused;
   }
 
-  SDL_FRect bodyRect{ getAbsoluteLeft() + 1, getAbsoluteTop() + 1.0f, width() - 2, height() - 2 };
-  SDL_SetRenderDrawColor(renderer, bodyColor.r, bodyColor.g, bodyColor.b, bodyColor.a);
+  return result;
+}
+
+void Button::drawBody(SDL_Renderer* renderer)
+{
+  Vector2i ap = absolutePosition();
+  SDL_Color bodyclr = bodyColor().toSdlColor();
+
+  SDL_FRect bodyRect{ ap.x + 1, ap.y + 1.0f, width() - 2, height() - 2 };
+  SDL_SetRenderDrawColor(renderer, bodyclr.r, bodyclr.g, bodyclr.b, bodyclr.a);
   SDL_RenderFillRectF(renderer, &bodyRect);
 
-  SDL_FRect btnRect{ getAbsoluteLeft() - 1.5f, getAbsoluteTop() - 1.0f, width() + 3.f, height() + 1 };
-
-
+  SDL_FRect btnRect{ ap.x - 1.5f, ap.y - 1.0f, width() + 3.f, height() + 1 };
   SDL_Color bl = (mPushed ? mTheme->mBorderDark : mTheme->mBorderLight).toSdlColor();
   SDL_SetRenderDrawColor(renderer, bl.r, bl.g, bl.b, bl.a);
-  SDL_FRect blr{ getAbsoluteLeft(), getAbsoluteTop() + (mPushed ? 0.5f : 1.5f), width() - 1,
-                 height() - 1 - (mPushed ? 0.0f : 1.0f) };
+  SDL_FRect blr{ ap.x, ap.y + (mPushed ? 0.5f : 1.5f), width() - 1,
+    height() - 1 - (mPushed ? 0.0f : 1.0f) };
   SDL_RenderDrawLineF(renderer, blr.x, blr.y, blr.x + blr.w, blr.y);
   SDL_RenderDrawLineF(renderer, blr.x, blr.y, blr.x, blr.y + blr.h - 1);
 
   SDL_Color bd = (mPushed ? mTheme->mBorderLight : mTheme->mBorderDark).toSdlColor();
   SDL_SetRenderDrawColor(renderer, bd.r, bd.g, bd.b, bd.a);
-  SDL_FRect bdr{ getAbsoluteLeft(), getAbsoluteTop() + 0.5f, width() - 1, height() - 2 };
+  SDL_FRect bdr{ ap.x, ap.y + 0.5f, width() - 1, height() - 2 };
   SDL_RenderDrawLineF(renderer, bdr.x, bdr.y + bdr.h, bdr.x + bdr.w, bdr.y + bdr.h);
   SDL_RenderDrawLineF(renderer, bdr.x + bdr.w, bdr.y, bdr.x + bdr.w, bdr.y + bdr.h);
 
   bd = mTheme->mBorderDark.toSdlColor();
   SDL_SetRenderDrawColor(renderer, bd.r, bd.g, bd.b, bd.a);
   SDL_RenderDrawRectF(renderer, &btnRect);
+}
+
+void Button::draw(SDL_Renderer* renderer)
+{
+  Widget::draw(renderer);
+
+  Vector2i ap = absolutePosition();
+  drawBody(renderer);
 
   int fontSize = mFontSize == -1 ? mTheme->mButtonFontSize : mFontSize;
   if (_captionTex.dirty)
@@ -201,7 +214,7 @@ void Button::draw(SDL_Renderer* renderer)
     mTheme->getTexAndRectUtf8(renderer, _captionTex, 0, 0, mCaption.c_str(), "sans-bold", fontSize, sdlTextColor);
   }
 
-  Vector2f center(getAbsoluteLeft() + width() * 0.5f, getAbsoluteTop() + height() * 0.5f);
+  Vector2f center(ap.x + width() * 0.5f, ap.y + height() * 0.5f);
   Vector2i textPos(center.x - _captionTex.w() * 0.5f, center.y - _captionTex.h() * 0.5f - 1);
   
   int offset = mPushed ? 2 : 0;
